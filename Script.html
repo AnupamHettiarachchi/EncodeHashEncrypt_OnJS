@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Encode, Hash, Encrypt in JS</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+  <h1>JS Encode / Decode / Hash / Encrypt / Decrypt Demo</h1>
+  <input type="text" id="inputText" placeholder="Enter text here" style="width: 300px;"><br><br>
+  
+  <button onclick="doEncoding()">Base64 Encode</button>
+  <button onclick="doDecoding()">Base64 Decode</button><br><br>
+
+  <button onclick="doHashing()">SHA-256 Hash</button><br><br>
+
+  <button onclick="doEncryption()">AES Encrypt</button>
+  <button onclick="doDecryption()">AES Decrypt</button><br><br>
+
+  <h4>Output:</h4>
+  <pre id="output"></pre>
+
+  <script>
+    let encrypted = ""; 
+    const key = CryptoJS.enc.Utf8.parse('1234567812345678'); 
+    const iv = CryptoJS.enc.Utf8.parse('1234567812345678');
+
+    function getInput() {
+      return document.getElementById("inputText").value;
+    }
+
+    function displayOutput(text) {
+      document.getElementById("output").innerText = text;
+    }
+
+    // Base64 Encoding
+    function doEncoding() {
+      const encoded = btoa(getInput());
+      displayOutput("Base64 Encoded: " + encoded);
+    }
+
+    // Base64 Decoding
+    function doDecoding() {
+      try {
+        const decoded = atob(getInput());
+        displayOutput("Base64 Decoded: " + decoded);
+      } catch (e) {
+        displayOutput("Invalid Base64 string");
+      }
+    }
+
+    // SHA-256 Hashing
+    function doHashing() {
+      const hash = CryptoJS.SHA256(getInput());
+      displayOutput("SHA-256 Hash: " + hash.toString(CryptoJS.enc.Hex));
+    }
+
+    // AES Encryption
+    function doEncryption() {
+      const ciphertext = CryptoJS.AES.encrypt(getInput(), key, { iv: iv }).toString();
+      encrypted = ciphertext; // save for decryption
+      displayOutput("AES Encrypted: " + ciphertext);
+    }
+
+    // AES Decryption
+    function doDecryption() {
+      try {
+        const bytes = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+        const originalText = bytes.toString(CryptoJS.enc.Utf8);
+        displayOutput("AES Decrypted: " + originalText);
+      } catch (e) {
+        displayOutput("Decryption failed.");
+      }
+    }
+  </script>
+</body>
+</html>
